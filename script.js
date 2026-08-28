@@ -55,3 +55,51 @@ window.addEventListener('click', (e) => {
         document.body.style.overflow = '';
     }
 });
+
+// Custom Cursor Logic
+const cursor = document.querySelector('.custom-cursor');
+if (cursor) {
+    document.addEventListener('mousemove', e => {
+        cursor.style.left = e.clientX + 'px';
+        cursor.style.top = e.clientY + 'px';
+    });
+    
+    // Add hover effect for clickable elements
+    const clickables = document.querySelectorAll('a, button, .portfolio-item, .close-modal');
+    clickables.forEach(el => {
+        el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+        el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
+    });
+}
+
+// Number Counter Animation
+const counters = document.querySelectorAll('.counter');
+const animateCounters = () => {
+    counters.forEach(counter => {
+        const updateCount = () => {
+            const target = +counter.getAttribute('data-target');
+            const count = +counter.innerText;
+            const inc = target / 40; // Speed of counting
+            
+            if (count < target) {
+                counter.innerText = Math.ceil(count + inc);
+                setTimeout(updateCount, 40);
+            } else {
+                counter.innerText = target;
+            }
+        };
+        updateCount();
+    });
+};
+
+// Trigger animation when Impact Section is scrolled into view
+const impactSection = document.querySelector('#impact');
+if(impactSection) {
+    const observer = new IntersectionObserver((entries) => {
+        if(entries[0].isIntersecting) {
+            animateCounters();
+            observer.unobserve(impactSection);
+        }
+    }, { threshold: 0.5 });
+    observer.observe(impactSection);
+}
